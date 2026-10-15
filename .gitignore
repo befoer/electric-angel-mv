@@ -1,0 +1,21 @@
+# 依赖与环境
+node_modules/
+.venv/
+__pycache__/
+
+# 出片、临时文件（含百度同步盘的上传临时文件）
+out/
+*.log
+*.baiduyun.*
+
+# 有版权、不进仓库的东西（自己放进来，见 assets/audio/README.md、资料/README.md）
+assets/audio/*
+!assets/audio/README.md
+资料/*
+!资料/README.md
+build/stems/
+assets/video/
+
+# 字体太大，不进仓库（自己下载，见 docs/FONTS.md）
+assets/fonts/*
+!assets/fonts/README.md

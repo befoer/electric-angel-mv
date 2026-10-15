@@ -1,0 +1,5 @@
+numpy>=2.5
+scipy>=1.18
+soundfile>=0.14
+pillow
+opencv-python

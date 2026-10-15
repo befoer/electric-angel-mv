@@ -1,0 +1,244 @@
+{
+  "_说明": "公式库（视觉方案 §4.12）。tex 用 MathJax 的 TeX 写法；\\class{标签}{…} 标出可圈注/变色的项；\\cssId{s_槽名}{\\rule{宽em}{高em}} 留出放数字或中文的槽。改完运行 node scripts/build_formulas.mjs 生成 build/formulas.json。verified=false 表示出处还没对过原文。",
+
+  "lm": {
+    "name": "自回归语言模型",
+    "tex": "P(\\class{y}{y} \\mid \\class{x}{x}) = \\prod_{t=1}^{T} P\\left(y_t \\mid y_{<t},\\, x\\right)",
+    "use": "前奏 6.1",
+    "source": "概率的链式法则；所有自回归语言模型（含 DeepSeek）的定义",
+    "check": "Jurafsky & Martin《Speech and Language Processing》§15 式(15.6)；Bengio et al. 2003 JMLR 式(1)；核对 2026-10-07",
+    "verified": true
+  },
+  "lm_sub": {
+    "name": "自回归语言模型（代入）",
+    "tex": "P(\\cssId{s_y}{\\rule{2.05em}{0.8em}} \\mid \\cssId{s_x}{\\rule{4.0em}{0.8em}}) = \\cssId{s_p}{\\rule{2.1em}{0.72em}}",
+    "use": "前奏 7.1–9.4：s_y=唱歌，s_x=唱首歌吧，s_p=概率（演出值）",
+    "source": "同 lm",
+    "check": "同 lm；槽内容为演出值；核对 2026-10-07",
+    "verified": true
+  },
+  "argmax": {
+    "name": "贪心解码",
+    "tex": "\\class{yhat}{\\hat{y}} = \\operatorname*{arg\\,max}_{w \\in \\mathcal{V}}\\; p_\\theta\\left(w \\mid \\cssId{s_ctx}{\\rule{4.0em}{0.8em}}\\right)",
+    "use": "L01：s_ctx=唱首歌吧，坍缩成「歌」",
+    "source": "贪心解码的定义（教科书）",
+    "check": "Jurafsky & Martin SLP3 §15 式(15.7)（ŷ=argmax_w P(w|·)）；核对 2026-10-07",
+    "verified": true
+  },
+  "sft": {
+    "name": "监督微调损失",
+    "tex": "\\mathcal{L}_{\\mathrm{SFT}}(\\theta) = -\\sum_{t} \\log p_\\theta\\left(y_t \\mid x,\\, y_{<t}\\right)",
+    "use": "L02",
+    "source": "SFT 的负对数似然目标（教科书）；DeepSeek-R1 的冷启动阶段即 SFT，arXiv:2501.12948",
+    "check": "Jurafsky & Martin SLP3 §7 式(7.7)（negative log likelihood，相差 1/T 平均）；R1 冷启动 SFT 见 arXiv:2501.12948 §2.2；核对 2026-10-07",
+    "verified": true
+  },
+  "dft": {
+    "name": "离散傅里叶变换",
+    "tex": "X_k = \\sum_{n=0}^{N-1} x_n \\, e^{-2\\pi i k n / N}",
+    "use": "L03",
+    "source": "DFT 定义（教科书）",
+    "check": "MathWorld: Discrete Fourier Transform 式(3)（前向约定 e^{−2πikn/N}；归一化为约定而非固有）；核对 2026-10-07",
+    "verified": true
+  },
+  "grpo_adv": {
+    "name": "GRPO 组内优势",
+    "tex": "A_i = \\frac{\\class{ri}{r_i} - \\operatorname{mean}(\\{r_1, \\dots, r_G\\})}{\\operatorname{std}(\\{r_1, \\dots, r_G\\})}",
+    "use": "L04（G 取 facts.json grpo_group_size = 16）",
+    "source": "DeepSeek-R1 论文 GRPO 优势公式，arXiv:2501.12948；最早见 DeepSeekMath，arXiv:2402.03300",
+    "check": "arXiv:2501.12948 §2.1 式(3)（原文记 A_i，无 hat）；最早见 DeepSeekMath arXiv:2402.03300 §4.1.2；核对 2026-10-07",
+    "verified": true
+  },
+  "grpo_sub": {
+    "name": "GRPO 组内优势（代入）",
+    "tex": "A_{\\cssId{s_i}{\\rule{1.1em}{0.62em}}} = \\frac{\\cssId{s_r}{\\rule{2.1em}{0.72em}} - \\cssId{s_m}{\\rule{2.1em}{0.72em}}}{\\cssId{s_sd}{\\rule{2.1em}{0.72em}}} = \\cssId{s_a}{\\rule{2.8em}{0.72em}}",
+    "use": "L04：实时代入",
+    "source": "同 grpo_adv；数值为演出值",
+    "check": "同 grpo_adv；槽内为演出值；核对 2026-10-07",
+    "verified": true
+  },
+  "fp8": {
+    "name": "FP8 E4M3 规格化数",
+    "tex": "x = (-1)^{\\class{s}{s}} \\times 2^{\\class{e}{e} - 7} \\times \\left(1 + \\frac{\\class{m}{m}}{8}\\right)",
+    "use": "L05（s 1 位、e 4 位、m 3 位，偏置 7）",
+    "source": "OCP 8-bit Floating Point Specification (OFP8)；Micikevicius et al. arXiv:2209.05433。DeepSeek-V3 全部张量用 E4M3：arXiv:2412.19437 §3.3",
+    "check": "OCP OFP8 R1.0 §4.1（1 sign bit, 4 biased exponent bits, 3 mantissa bits, exponent bias 7）；Micikevicius et al. arXiv:2209.05433 Table 1；'E4M3 on all tensors' 见 arXiv:2412.19437 §3.3.2；核对 2026-10-07",
+    "verified": true
+  },
+  "cos": {
+    "name": "余弦相似度",
+    "tex": "\\cos\\theta = \\frac{\\mathbf{u} \\cdot \\mathbf{v}}{\\lVert \\mathbf{u} \\rVert \\, \\lVert \\mathbf{v} \\rVert}",
+    "use": "L06",
+    "source": "教科书",
+    "check": "MathWorld: Dot Product 式(1) a·b=|a||b|cosθ（变形即得）；核对 2026-10-07",
+    "verified": true
+  },
+  "w2v_king": {
+    "name": "词向量类比",
+    "tex": "\\overrightarrow{\\mathrm{king}} - \\overrightarrow{\\mathrm{man}} + \\overrightarrow{\\mathrm{woman}} \\approx \\overrightarrow{\\mathrm{queen}}",
+    "use": "L06",
+    "source": "Mikolov et al. 2013，arXiv:1301.3781",
+    "check": "arXiv:1301.3781 §1 导言：vector(\"King\")−vector(\"Man\")+vector(\"Woman\") 最接近 Queen；§5 表格；核对 2026-10-07",
+    "verified": true
+  },
+  "w2v_ai": {
+    "name": "AI − A ≈ I（梗）",
+    "tex": "\\overrightarrow{\\mathrm{AI}} - \\overrightarrow{\\mathrm{A}} \\approx \\overrightarrow{\\mathrm{I}}",
+    "use": "L06",
+    "source": "梗，仿 w2v_king",
+    "check": "梗，仿 w2v_king；无需出处",
+    "verified": true
+  },
+  "sgd": {
+    "name": "梯度下降",
+    "tex": "\\theta_{t+1} = \\theta_{t} - \\eta \\, \\nabla_{\\theta} \\mathcal{L}(\\theta_{t})",
+    "use": "L07",
+    "source": "教科书",
+    "check": "Boyd & Vandenberghe《Convex Optimization》§10.1（Δx:=−∇f(x)，步长 t）；核对 2026-10-07",
+    "verified": true
+  },
+  "mla": {
+    "name": "MLA 的 KV 压缩",
+    "tex": "\\mathbf{c}_{t}^{KV} = W^{DKV} \\mathbf{h}_{t}",
+    "use": "L08",
+    "source": "DeepSeek-V2 §2.1.2，arXiv:2405.04434",
+    "check": "arXiv:2405.04434 §2.1.2 式(9)；核对 2026-10-07",
+    "verified": true
+  },
+  "mla_k": {
+    "name": "MLA 的 K 还原",
+    "tex": "\\mathbf{k}_{t}^{C} = W^{UK} \\mathbf{c}_{t}^{KV}",
+    "use": "L08、L20",
+    "source": "DeepSeek-V2 §2.1.2，arXiv:2405.04434",
+    "check": "arXiv:2405.04434 §2.1.2 式(10)；核对 2026-10-07",
+    "verified": true
+  },
+  "heart": {
+    "name": "心形线",
+    "tex": "(x^2 + y^2 - 1)^3 - x^2 y^3 = 0",
+    "use": "L10、L22、L30",
+    "source": "经典隐函数心形曲线（MathWorld: Heart Curve）",
+    "check": "MathWorld: Heart Curve（first heart curve）；核对 2026-10-07",
+    "verified": true
+  },
+  "bpm_a": {
+    "name": "心率换算（前）",
+    "tex": "f = \\frac{150}{60}\\ \\mathrm{Hz}",
+    "use": "L10",
+    "source": "本曲 150 BPM（项目方案 §2.1）",
+    "check": "演出值（150 BPM，项目方案 §2.1）",
+    "verified": true
+  },
+  "bpm_b": {
+    "name": "心率换算（后）",
+    "tex": "f = 2.5\\ \\mathrm{Hz}",
+    "use": "L10",
+    "source": "同上",
+    "check": "演出值（同上）",
+    "verified": true
+  },
+  "psi": {
+    "name": "叠加态",
+    "tex": "\\lvert \\psi \\rangle = \\sum_{k} \\alpha_{k} \\lvert k \\rangle",
+    "use": "L11",
+    "source": "量子力学教科书",
+    "check": "Feynman Lectures Vol.III Ch.1；牛津 QM 讲义式(21) |ψ⟩=Σ_j ψ_j|a_j⟩；核对 2026-10-07",
+    "verified": true
+  },
+  "born": {
+    "name": "玻恩规则 = softmax 采样分布",
+    "tex": "p_{k} = \\lvert \\alpha_{k} \\rvert^{2} = \\frac{e^{z_k / T}}{\\sum_{j} e^{z_j / T}}",
+    "use": "L11（等号右边是演出上的类比）",
+    "source": "玻恩规则（教科书）；带温度的 softmax（教科书）",
+    "check": "玻恩规则 p=|φ|²：Feynman Lectures Vol.III Ch.1 §1-5；温度 softmax：Hinton et al. 2015 arXiv:1503.02531 §2；右端为演出类比；核对 2026-10-07",
+    "verified": true
+  },
+  "spring": {
+    "name": "阻尼振动",
+    "tex": "x(t) = A \\, e^{-\\gamma t} \\cos(\\omega t)",
+    "use": "L12（画面摇晃按它算）",
+    "source": "欠阻尼谐振子的解（教科书）",
+    "check": "MathWorld: Damped Simple Harmonic Motion 式(1)；欠阻尼通解 x=e^{−γt}(A cosωt+B sinωt)，取 B=0；核对 2026-10-07",
+    "verified": true
+  },
+  "nan": {
+    "name": "炸炉",
+    "tex": "\\mathcal{L} = \\mathrm{NaN}",
+    "use": "L12、采样风暴",
+    "source": "梗",
+    "check": "梗；无需出处",
+    "verified": true
+  },
+  "softmax_T": {
+    "name": "带温度的 softmax",
+    "tex": "p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}",
+    "use": "L16、采样风暴",
+    "source": "教科书",
+    "check": "Hinton et al. 2015 arXiv:1503.02531 §2：q_i=exp(z_i/T)/Σ_j exp(z_j/T)；核对 2026-10-07",
+    "verified": true
+  },
+  "attn": {
+    "name": "缩放点积注意力",
+    "tex": "\\mathrm{Attention}(Q, K, V) = \\mathrm{softmax}\\!\\left(\\frac{Q K^{\\top}}{\\sqrt{d_k}}\\right) V",
+    "use": "L09 墙纸、L23",
+    "source": "Vaswani et al. 2017，arXiv:1706.03762",
+    "check": "arXiv:1706.03762 §3.2.1 式(1)；核对 2026-10-07",
+    "verified": true
+  },
+  "moe_s": {
+    "name": "MoE 亲和度",
+    "tex": "s_{i,t} = \\operatorname{Sigmoid}\\left(\\mathbf{u}_t^{T} \\mathbf{e}_i\\right)",
+    "use": "间奏一",
+    "source": "DeepSeek-V3 §2.1.2，arXiv:2412.19437",
+    "check": "arXiv:2412.19437 §2.1.2 式(15)；核对 2026-10-07",
+    "verified": true
+  },
+  "moe_gate": {
+    "name": "无辅助损失的 Top-K 路由",
+    "tex": "g'_{i,t} = \\begin{cases} s_{i,t}, & s_{i,t} + \\class{b}{b_i} \\in \\operatorname{Topk}\\left(\\{ s_{j,t} + b_j \\mid 1 \\leqslant j \\leqslant N_r \\}, K_r\\right) \\\\ 0, & \\text{otherwise} \\end{cases}",
+    "use": "间奏一（b_i 是负载均衡偏置：白米饭专家过载时调低）",
+    "source": "DeepSeek-V3 §2.1.2 Auxiliary-Loss-Free Load Balancing，arXiv:2412.19437",
+    "check": "arXiv:2412.19437 §2.1.2 式(16)（b_i 只用于选 Top-K，门控值仍取 s_{i,t}，见式(13)）；核对 2026-10-07",
+    "verified": true
+  },
+  "grpo_obj": {
+    "name": "GRPO 目标",
+    "tex": "\\mathcal{J}_{\\mathrm{GRPO}}(\\theta) = \\frac{1}{G} \\sum_{i=1}^{G} \\left( \\min\\left( \\frac{\\pi_\\theta(o_i \\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i \\mid q)} A_i,\\ \\operatorname{clip}\\left( \\frac{\\pi_\\theta(o_i \\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i \\mid q)}, 1 - \\varepsilon, 1 + \\varepsilon \\right) A_i \\right) - \\beta \\, \\mathbb{D}_{KL}\\left( \\pi_\\theta \\,\\|\\, \\pi_{\\mathrm{ref}} \\right) \\right)",
+    "use": "采样风暴",
+    "source": "DeepSeek-R1 论文 GRPO 目标（期望符号省略），arXiv:2501.12948",
+    "check": "arXiv:2501.12948 §2.1 式(1)（KL 项式(2)）；原文含期望 \\mathbb{E}[q~P(Q),{o_i}~π_θold] ，库里省略 E 语义不变；核对 2026-10-07",
+    "verified": true
+  },
+  "mtp": {
+    "name": "多 token 预测损失",
+    "tex": "\\mathcal{L}_{\\text{MTP}} = \\frac{\\lambda}{D} \\sum_{k=1}^{D} \\mathcal{L}_{\\text{MTP}}^{k}",
+    "use": "墙纸",
+    "source": "DeepSeek-V3 §2.2，arXiv:2412.19437",
+    "check": "arXiv:2412.19437 §2.2 式(25)（单层损失式(24)）；核对 2026-10-07",
+    "verified": true
+  },
+  "rf_fwd": {
+    "name": "Rectified Flow 前向加噪",
+    "tex": "x_{\\class{sig}{\\sigma}} = (1-\\class{sig}{\\sigma})\\,x_0 + \\class{sig}{\\sigma}\\,\\class{eps}{\\epsilon}",
+    "use": "间奏二 75（第十五轮）：噪声越大 σ 越接近 1",
+    "source": "Esser et al. 2024《Scaling Rectified Flow Transformers for High-Resolution Image Synthesis》（SD3），arXiv:2403.03206：前向过程 z_t = (1 − t)x_0 + tε；AuraFlow / ComfyUI 的 ModelSamplingAuraFlow 同属这一类（flow）",
+    "check": "Esser et al. 2024，arXiv:2403.03206 §3「Flow Trajectories」→「Rectified Flow」式(13)：z_t=(1−t)x_0+tε, ε∼𝒩(0,I)（原文时间变量记 t，我们用 σ 代它；ε 即我们的 ε）；核对 2026-10-11",
+    "verified": true
+  },
+  "flow_euler": {
+    "name": "Euler 采样一步",
+    "tex": "x_{\\sigma_{i+1}} = x_{\\sigma_i} + (\\sigma_{i+1}-\\sigma_i)\\,\\class{v}{v_\\theta}(x_{\\sigma_i}, \\sigma_i)",
+    "use": "间奏二 77（第十五轮）",
+    "source": "常微分方程的 Euler 法；ComfyUI comfy/k_diffusion/sampling.py 的 sample_euler：x = x + d · dt，dt = sigmas[i+1] − sigmas[i]",
+    "check": "ComfyUI comfy/k_diffusion/sampling.py 函数 sample_euler（Algorithm 2, Karras et al. 2022）：denoised=model(x, σ̂)，d=to_d(x, σ̂, denoised)=(x−denoised)/σ̂，dt=sigmas[i+1]−σ̂，x=x+d·dt；默认 s_churn=0 时 σ̂=sigmas[i]，故 dt=sigmas[i+1]−sigmas[i]；flow 用 CONST 参数化时 built-in model_output 就是速度，to_d 即 v_θ（model_sampling.py class CONST.calculate_denoised=x−model_output·σ）；核对 2026-10-11",
+    "verified": true
+  },
+  "flow_shift": {
+    "name": "flow 模型的时间平移（shift）",
+    "tex": "\\sigma = \\frac{s\\,\\tau}{1 + (s-1)\\,\\tau}",
+    "use": "间奏二 σ 曲线卡（第十五轮）：s = 3.00（用户工作流里 ModelSamplingAuraFlow 的 shift），τ 从 1 线性降到 0",
+    "source": "ComfyUI comfy/model_sampling.py 的 time_snr_shift(alpha, t) = alpha·t / (1 + (alpha − 1)·t)；SD3 论文的 timestep shifting",
+    "check": "ComfyUI comfy/model_sampling.py 函数 time_snr_shift(alpha, t)：alpha==1 时返回 t，否则 alpha·t/(1+(alpha−1)·t)（alpha 即我们的 s、t 即 τ）；class ModelSamplingDiscreteFlow.sigma(timestep)=time_snr_shift(self.shift, timestep/multiplier)；节点 ModelSamplingAuraFlow（comfy_extras/nodes_model_advanced.py）继承 ModelSamplingSD3，patch_aura 以 multiplier=1.0 调 set_parameters(shift=…) 走同一条路；核对 2026-10-11",
+    "verified": true
+  }
+}

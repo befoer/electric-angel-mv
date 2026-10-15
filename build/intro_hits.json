@@ -1,0 +1,411 @@
+{
+ "grid": {
+  "bpm": 150.0003,
+  "beat": 0.399999,
+  "bar": 1.599997,
+  "first_beat": 0.0665,
+  "first_downbeat": 0.0665,
+  "drift_ms_std": 6.55,
+  "method": "demucs stems; tempo=drums long-lag autocorr; beat=kick fold; downbeat=bass+chroma novelty"
+ },
+ "first_sound": 1.266,
+ "beats": [
+  {
+   "t": 1.266,
+   "bar": 1,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.89
+  },
+  {
+   "t": 1.666,
+   "bar": 2,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.67
+  },
+  {
+   "t": 2.066,
+   "bar": 2,
+   "beat": 2,
+   "role": "弱",
+   "strength": 1.05
+  },
+  {
+   "t": 2.466,
+   "bar": 2,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.4
+  },
+  {
+   "t": 2.866,
+   "bar": 2,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.42
+  },
+  {
+   "t": 3.266,
+   "bar": 3,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.32
+  },
+  {
+   "t": 3.666,
+   "bar": 3,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.24
+  },
+  {
+   "t": 4.066,
+   "bar": 3,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.24
+  },
+  {
+   "t": 4.466,
+   "bar": 3,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.15
+  },
+  {
+   "t": 4.866,
+   "bar": 4,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.21
+  },
+  {
+   "t": 5.266,
+   "bar": 4,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.22
+  },
+  {
+   "t": 5.666,
+   "bar": 4,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.24
+  },
+  {
+   "t": 6.066,
+   "bar": 4,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.31
+  },
+  {
+   "t": 6.466,
+   "bar": 5,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.2
+  },
+  {
+   "t": 6.866,
+   "bar": 5,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.21
+  },
+  {
+   "t": 7.266,
+   "bar": 5,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.19
+  },
+  {
+   "t": 7.666,
+   "bar": 5,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.12
+  },
+  {
+   "t": 8.066,
+   "bar": 6,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.38
+  },
+  {
+   "t": 8.466,
+   "bar": 6,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.88
+  },
+  {
+   "t": 8.866,
+   "bar": 6,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.86
+  },
+  {
+   "t": 9.266,
+   "bar": 6,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.84
+  },
+  {
+   "t": 9.666,
+   "bar": 7,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.72
+  },
+  {
+   "t": 10.066,
+   "bar": 7,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.59
+  },
+  {
+   "t": 10.466,
+   "bar": 7,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.39
+  },
+  {
+   "t": 10.866,
+   "bar": 7,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.5
+  },
+  {
+   "t": 11.266,
+   "bar": 8,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.33
+  },
+  {
+   "t": 11.666,
+   "bar": 8,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.3
+  },
+  {
+   "t": 12.066,
+   "bar": 8,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.26
+  },
+  {
+   "t": 12.466,
+   "bar": 8,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.21
+  },
+  {
+   "t": 12.866,
+   "bar": 9,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.14
+  },
+  {
+   "t": 13.266,
+   "bar": 9,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.31
+  },
+  {
+   "t": 13.666,
+   "bar": 9,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.13
+  },
+  {
+   "t": 14.066,
+   "bar": 9,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.29
+  },
+  {
+   "t": 14.466,
+   "bar": 10,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.31
+  },
+  {
+   "t": 14.866,
+   "bar": 10,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.75
+  },
+  {
+   "t": 15.266,
+   "bar": 10,
+   "beat": 3,
+   "role": "次强",
+   "strength": 1.03
+  },
+  {
+   "t": 15.666,
+   "bar": 10,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.92
+  },
+  {
+   "t": 16.066,
+   "bar": 11,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.87
+  },
+  {
+   "t": 16.466,
+   "bar": 11,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.8
+  },
+  {
+   "t": 16.866,
+   "bar": 11,
+   "beat": 3,
+   "role": "次强",
+   "strength": 1.03
+  },
+  {
+   "t": 17.266,
+   "bar": 11,
+   "beat": 4,
+   "role": "弱",
+   "strength": 1.07
+  },
+  {
+   "t": 17.666,
+   "bar": 12,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.68
+  },
+  {
+   "t": 18.066,
+   "bar": 12,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.69
+  },
+  {
+   "t": 18.466,
+   "bar": 12,
+   "beat": 3,
+   "role": "次强",
+   "strength": 0.6
+  },
+  {
+   "t": 18.866,
+   "bar": 12,
+   "beat": 4,
+   "role": "弱",
+   "strength": 0.92
+  },
+  {
+   "t": 19.266,
+   "bar": 13,
+   "beat": 1,
+   "role": "强",
+   "strength": 0.74
+  },
+  {
+   "t": 19.666,
+   "bar": 13,
+   "beat": 2,
+   "role": "弱",
+   "strength": 0.78
+  }
+ ],
+ "accents": [
+  {
+   "t": 1.366,
+   "bar": 1,
+   "pos": "4+1/4",
+   "strength": 0.98
+  },
+  {
+   "t": 1.466,
+   "bar": 1,
+   "pos": "4+2/4",
+   "strength": 1.23
+  },
+  {
+   "t": 15.466,
+   "bar": 10,
+   "pos": "3+2/4",
+   "strength": 0.99
+  },
+  {
+   "t": 15.866,
+   "bar": 10,
+   "pos": "4+2/4",
+   "strength": 1.0
+  },
+  {
+   "t": 16.266,
+   "bar": 11,
+   "pos": "1+2/4",
+   "strength": 0.89
+  },
+  {
+   "t": 16.666,
+   "bar": 11,
+   "pos": "2+2/4",
+   "strength": 0.9
+  },
+  {
+   "t": 17.066,
+   "bar": 11,
+   "pos": "3+2/4",
+   "strength": 1.07
+  },
+  {
+   "t": 17.466,
+   "bar": 11,
+   "pos": "4+2/4",
+   "strength": 0.96
+  },
+  {
+   "t": 19.066,
+   "bar": 12,
+   "pos": "4+2/4",
+   "strength": 1.11
+  },
+  {
+   "t": 19.466,
+   "bar": 13,
+   "pos": "1+2/4",
+   "strength": 0.88
+  },
+  {
+   "t": 19.866,
+   "bar": 13,
+   "pos": "2+2/4",
+   "strength": 0.86
+  }
+ ]
+}

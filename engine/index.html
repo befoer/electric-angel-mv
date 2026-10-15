@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>DS娘 × 电子天使 · 预览</title>
+<style>
+  :root { --bg: #11131a; --panel: #1a1d27; --text: #dfe4f5; --dim: #8a90a8; --brand: #4d6bfe; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.4 "Microsoft YaHei", system-ui, sans-serif; overflow: hidden; }
+  #stage { position: absolute; inset: 0 0 92px 0; display: flex; align-items: center; justify-content: center; }
+  #wrap { position: relative; aspect-ratio: 16 / 9; width: min(100%, calc((100vh - 92px) * 16 / 9)); }
+  #wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #ov { pointer-events: none; }
+  #bar { position: absolute; left: 0; right: 0; bottom: 0; height: 92px; background: var(--panel); padding: 8px 14px; display: grid; gap: 6px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  #scrub { flex: 1; accent-color: var(--brand); }
+  button, input[type=number] { background: #262a38; color: var(--text); border: 1px solid #343a4f; border-radius: 6px; padding: 3px 9px; font: inherit; }
+  button:hover { border-color: var(--brand); }
+  input[type=number] { width: 64px; }
+  #time { font-family: Consolas, monospace; min-width: 260px; }
+  #shot { color: var(--dim); }
+  #loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--dim); font-size: 16px; }
+  .dim { color: var(--dim); }
+</style>
+</head>
+<body>
+<div id="stage"><div id="wrap"><canvas id="c" width="1920" height="1080"></canvas><canvas id="ov" width="1920" height="1080"></canvas></div></div>
+<div id="loading">加载字体与数据…</div>
+<div id="bar">
+  <div class="row">
+    <button id="play">▶ 播放</button>
+    <span id="time">00:00.000</span>
+    <input id="scrub" type="range" min="0" max="191.6876" step="0.001" value="0">
+  </div>
+  <div class="row">
+    <span class="dim">小节</span><input id="bar-number" type="number" min="1" max="120" value="1"><button id="go">跳转</button>
+    <span id="jumps"></span>
+    <span id="shot"></span>
+    <span class="dim" style="margin-left:auto">空格 播放 · ←/→ 一帧 · Shift+←/→ 一拍 · [ ] 一小节 · D 调试 · L 循环当前镜头</span>
+  </div>
+</div>
+<audio id="audio" preload="auto"></audio>
+<script type="module" src="./preview.js"></script>
+</body>
+</html>

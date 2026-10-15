@@ -1,0 +1,9 @@
+{
+  "bpm": 150.0003,
+  "beat": 0.399999,
+  "bar": 1.599997,
+  "first_beat": 0.0665,
+  "first_downbeat": 0.0665,
+  "drift_ms_std": 6.55,
+  "method": "demucs stems; tempo=drums long-lag autocorr; beat=kick fold; downbeat=bass+chroma novelty"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ds-electric-angel",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "1.0.10"
+  },
+  "devDependencies": {
+    "mathjax-full": "3.2.2"
+  }
+}
