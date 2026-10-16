@@ -104,7 +104,7 @@ export function drawLogo(ctx, S, o) {
   }
 
   // 2. 水面以上的字：格子画进缓冲，再用字形蒙版裁出干净的边
-  const bo = pooled('logoO', M.w, M.h), bi = pooled('logoI', M.w, M.h), mo = pooled('logoMO', M.w, M.h), mi = pooled('logoMI', M.w, M.h);
+  const bo = pooled('logoO', M.w, M.h, true), bi = pooled('logoI', M.w, M.h, true), mo = pooled('logoMO', M.w, M.h, true), mi = pooled('logoMI', M.w, M.h, true);
   const [go, gi, gmo, gmi] = [bo, bi, mo, mi].map(b => { const g = b.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.clearRect(0, 0, M.w, M.h); return g; });
   const code = glyphs('SCB', INK), wav = glyphs('SCB', '#FFFFFF'), tick = Math.floor(t * 3);
   go.fillStyle = o.edge ?? '#FFFFFF';

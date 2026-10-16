@@ -696,7 +696,7 @@ export function i08At28(t) { const h = 730; return { x: 1290, y: lerp(330, 170, 
 // · 心声气泡：字体换成得意黑；气泡和小三角是一条路径，描边连着小三角走（core/ui.js speechBubble）
 const ROLL28 = ['嗯', '我', '不', '会', '能', '可以', '飞', '唱', '跳', '游', '走', '…', '吗', '好'];
 function layerPlate22(S, k, ent, t) {
-  const [L, cands] = LAYERS[k], cv = pooled(`l28Q${k}`, 980, 230), c = cv.getContext('2d'), p = S.pal;
+  const [L, cands] = LAYERS[k], cv = pooled(`l28Q${k}`, 980, 230, true), c = cv.getContext('2d'), p = S.pal;
   c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 980, 230);
   c.fillStyle = css('#FFFFFF', 0.92); rrect(c, 4, 4, 972, 222, 18); c.fill();
   c.lineWidth = 2; c.strokeStyle = css(p.line, 0.8); c.stroke();
@@ -748,11 +748,11 @@ function plates28(g, S, t) {
 // 先压扁一下（0.07 s），弹起约 70 px，再带着一点翻转往下掉出画面、边掉边往远处缩——和 L29 里她从上往下落是同一个方向。
 // 窗口由 L28 和 L29 各画一份（同一个时刻函数，v3b.js 在视频后面调 fallPlates28），叠化时重合，切过去以后接着掉完，不再淡出
 const JUMP29 = () => L28_1() - 0.255;
-// 第二十六轮（用户：2:34 窗口被震起后往下掉可以，就是速度比人物速度慢了点，加快一下）。rev t29f26
+// 第二十六轮（用户：2:34 窗口被震起后往下掉可以，就是速度比人物速度慢了点，加快一下；开关 t29f26 第二十八轮并进代码）
 // 她往上冲出画面只用约 0.17 s（最快约 9000 px/s），窗口以前掉出画面要 0.7 s。改成：压扁 0.05 s、每层只晚 0.03 s、
 // 弹起更快更矮（约 40 px），重力 9200 → 24000 px/s²——0.35 s 掉出画面，末速约 7000 px/s，和她冲出去的速度一个量级
 function plateJump29(t, order) {
-  const f26 = rev('t29f26') >= 26, J = f26 ? { st: 0.03, cr: 0.05, v0: 1400, g: 12000, sc: 0.3, fa: 0.24 } : { st: 0.05, cr: 0.07, v0: 1150, g: 4600, sc: 0.55, fa: 0.4 };
+  const J = { st: 0.03, cr: 0.05, v0: 1400, g: 12000, sc: 0.3, fa: 0.24 };
   const tau = t - JUMP29() - J.st * order; if (tau <= 0) return null;
   if (tau < J.cr) { const q = Math.sin((Math.PI * tau) / J.cr); return { dy: 16 * q, rot: 0, s: 1, sy: 1 - 0.07 * q, a: 1 }; }
   const v = tau - J.cr, side = rnd(order, 2911) - 0.5;

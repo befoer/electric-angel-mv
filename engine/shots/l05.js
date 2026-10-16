@@ -11,7 +11,7 @@ import { hash, rnd } from '../core/rand.js';
 import { font, fonts, glyphs } from '../core/glyphs.js';
 import { keyword } from '../core/data.js';
 import { photo } from '../core/portrait.js';
-import { newCanvas } from '../core/env.js';
+import { newCanvas, hiCanvas } from '../core/env.js';
 import { camAt, withCam, pooled, camToScreen } from '../core/cam.js';
 import { hud } from '../core/hud.js';
 import { card, stamp } from '../core/kit.js';
@@ -37,7 +37,7 @@ const CAM = () => [
 let MOS = null;
 function mosaic() {
   if (MOS) return MOS;
-  const small = photo('I03', SUB, MC, MR), d = small.getContext('2d').getImageData(0, 0, MC, MR).data;
+  const small = photo('I03', SUB, MC, MR, { hi: false }), d = small.getContext('2d').getImageData(0, 0, MC, MR).data;
   const lum = new Float32Array(MC * MR), a = new Uint8Array(MC * MR);
   for (let i = 0; i < MC * MR; i++) { lum[i] = (0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2]) / 255; a[i] = d[i * 4 + 3]; }
   MOS = { small, lum, a };
@@ -49,7 +49,7 @@ function mosaic() {
 let TEX = null;
 function binTexture(pal) {
   if (TEX) return TEX;
-  const cv = (TEX = newCanvas(W, H * 2)), c = cv.getContext('2d');
+  const cv = (TEX = hiCanvas(W, H * 2)), c = cv.getContext('2d');
   c.font = fonts(22, 'DOT'); c.textBaseline = 'top'; // 像素字体的 0/1
   for (let r = 0; r < 90; r++) for (let k = 0; k < 120; k++) {
     c.globalAlpha = 0.3 + 0.7 * rnd(k, r, 5) ** 1.3;
@@ -117,7 +117,7 @@ export function l05(ctx, S) {
 
 // 背景巨字「0♪1」：唱到时从 1.5 倍砸下来，字里是滚动的 0/1；描边 BRAND
 function bigWord(ctx, S, cam, kw) {
-  const pal = S.pal, buf = pooled('l05word', W, H), b = buf.getContext('2d');
+  const pal = S.pal, buf = pooled('l05word', W, H, true), b = buf.getContext('2d');
   b.setTransform(1, 0, 0, 1, 0, 0); b.clearRect(0, 0, W, H);
   b.font = fonts(640, 'ZENB', 'J'); b.textAlign = 'center'; b.textBaseline = 'middle';
   const xs = [330, 960, 1590], WY = 360;

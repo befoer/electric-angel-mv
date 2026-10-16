@@ -1,6 +1,6 @@
 // 字形缓存：每种（字体, 颜色, 字号）一套，按需把字画进图集页，之后每帧只做 drawImage（视觉方案 §八）
 import { CW, CH } from './const.js';
-import { ENV, newCanvas } from './env.js';
+import { ENV, newCanvas, hiCanvas } from './env.js';
 
 export const FONTS = {
   SC: ['SarasaSC', 'assets/fonts/SarasaMonoSC-Regular.ttf'],
@@ -118,7 +118,7 @@ export class GlyphSet {
     if (g) return g;
     const pi = Math.floor(this.n / PER_PAGE), si = this.n % PER_PAGE;
     this.n++;
-    if (!this.pages[pi]) this.pages[pi] = newCanvas(PAGE, PAGE);
+    if (!this.pages[pi]) this.pages[pi] = hiCanvas(PAGE, PAGE); // 出片超采样时图集也是高清的（core/env.js）
     const cv = this.pages[pi], c = cv.getContext('2d');
     const sx = (si % PER_ROW) * SLOT_W, sy = Math.floor(si / PER_ROW) * SLOT_H;
     c.fillStyle = this.color; c.strokeStyle = this.color;

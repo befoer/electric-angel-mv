@@ -1,6 +1,6 @@
 // 公式层：画 build/formulas.json 里排好的公式，每个字形可单独动画（视觉方案 §4.12）
 // 六种动作：板书 write · 代入 slots + fnum · 圈注 marks + box() · 推导 morphFormula · 出图（镜头自己画）· 坍缩 collapse
-import { ENV, newCanvas } from './env.js';
+import { ENV, newCanvas, hiCanvas } from './env.js';
 import { clamp, lerp, smooth, easeIn, easeOutBack } from './time.js';
 import { font } from './glyphs.js';
 import { rrect } from './ui.js';
@@ -228,7 +228,7 @@ export function formulaWall(w, h, color, { ids = null, size = 26, seed = 0, gapX
   const key = `${w}|${h}|${color}|${size}|${seed}|${ids}`;
   let cv = WALL.get(key);
   if (cv) return cv;
-  cv = newCanvas(w, h);
+  cv = hiCanvas(w, h);
   const c = cv.getContext('2d'), list = ids || Object.keys(F.formulas).filter(k => !k.startsWith('bpm') && k !== 'nan');
   let y = -size * 0.5, row = 0;
   while (y < h) {

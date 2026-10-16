@@ -99,7 +99,7 @@ function content(ctx, S) {
   md.fill(0);
   for (const cl of Gd.cells) if (D - thrOf(cl) <= 0) md[(cl.y * Gd.cols + cl.x) * 4 + 3] = 255;
   Gd.mctx.putImageData(Gd.md, 0, 0);
-  const body = pooled('l11body', Gd.img.width, Gd.img.height), bc = body.getContext('2d');
+  const body = pooled('l11body', Gd.img.width, Gd.img.height, true), bc = body.getContext('2d');
   bc.globalCompositeOperation = 'source-over'; bc.clearRect(0, 0, body.width, body.height);
   bc.drawImage(Gd.img, 0, 0);
   bc.globalCompositeOperation = 'destination-in'; bc.imageSmoothingEnabled = false;
@@ -107,7 +107,7 @@ function content(ctx, S) {
   bc.globalCompositeOperation = 'source-over';
 
   // 叠加态：身后两份纯色叠影，随风左右错开
-  const ghost = pooled('l11ghost', body.width, body.height), gc = ghost.getContext('2d');
+  const ghost = pooled('l11ghost', body.width, body.height, true), gc = ghost.getContext('2d');
   const spread = 6 + 30 * w;
   for (const [col, dx, a] of [[BRAND, -spread, 0.32], [pal.acc[0], spread * 0.8, 0.26]]) {
     gc.globalCompositeOperation = 'source-over'; gc.clearRect(0, 0, ghost.width, ghost.height);

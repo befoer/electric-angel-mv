@@ -3,7 +3,7 @@ import { W, H } from './const.js';
 import { rnd, hash, vnoise } from './rand.js';
 import { css } from './color.js';
 import { clamp } from './time.js';
-import { newCanvas } from './env.js';
+import { newCanvas, hiCanvas } from './env.js';
 
 export function flash(ctx, a, color = '#FFFFFF') {
   if (a <= 0.003) return;
@@ -62,7 +62,7 @@ export function tinted(src, color) {
   const k = `${src.__tid}|${color}|${src.width}x${src.height}`;
   let cv = TINTS.get(k);
   if (cv) return cv;
-  cv = newCanvas(src.width, src.height);
+  cv = src.__ss ? hiCanvas(src.width, src.height) : newCanvas(src.width, src.height);
   const c = cv.getContext('2d');
   c.drawImage(src, 0, 0);
   c.globalCompositeOperation = 'source-in'; c.fillStyle = color; c.fillRect(0, 0, cv.width, cv.height);

@@ -209,7 +209,7 @@ const mixHex = (a, b, u) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice
 function hand11(ctx, S, ha, t) {
   const reach = easeOut(clamp(ha / (T_TOUCH - handStart()))), hw = 560, hh = 500;
   const hx = lerp(W + 300, CX + 150 + 0.28 * hw, reach) + 10 * spring(t - T_TOUCH, 6, 14) * (t >= T_TOUCH ? 1 : 0), hy = lerp(H + 100, CY + 230, reach) + 6 * Math.sin(t * 3);
-  const src = photo('I05', HAND, hw, hh, { keyed: true }), cv = pooled('l06hand', hw + 40, hh + 40), c = cv.getContext('2d');
+  const src = photo('I05', HAND, hw, hh, { keyed: true }), cv = pooled('l06hand', hw + 40, hh + 40, true), c = cv.getContext('2d');
   c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height);
   c.drawImage(src, 20, 20);
   c.globalCompositeOperation = 'destination-in';

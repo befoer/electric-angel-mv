@@ -14,7 +14,7 @@ import { camAt, withCam } from '../core/cam.js';
 import { hud } from '../core/hud.js';
 import { targetLock } from '../core/hudkit.js';
 import { paper, backDeco, frontDeco, punch, formulaFx } from './scene.js';
-import { newCanvas } from '../core/env.js';
+import { newCanvas, hiCanvas } from '../core/env.js';
 import { card, leader, dots, hatch, corners, checker, silhouetteFill } from '../core/kit.js';
 import { drawFormula, formulaWall } from '../core/math.js';
 import { rrect } from '../core/ui.js';
@@ -71,7 +71,7 @@ const PCARD = [980, 80, 880, 560], DCARD = [1080, 700, 720, 190];
 // 每帧合成剪影 + 彩色立绘的画布（只建一次）
 let COMP = null;
 function composite(reveal) {
-  if (!COMP) COMP = newCanvas(SW, SH);
+  if (!COMP) COMP = hiCanvas(SW, SH);
   const c = COMP.getContext('2d');
   c.clearRect(0, 0, SW, SH);
   const wall = formulaWall(SW, SH, '#FFFFFF', { size: 22, seed: 12 });

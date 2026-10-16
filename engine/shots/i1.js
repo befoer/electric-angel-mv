@@ -77,7 +77,7 @@ const heatColor = (S, v) => v < 0.05 ? '#FFFFFF' : v < 0.45 ? mix(S.pal.tint[3],
 
 // 网格画进自己的缓冲（平面坐标），再按俯仰角画到屏幕上
 function drawGrid(S, h, wave) {
-  const cv = pooled('i1grid', GW + 40, GH + 40), c = cv.getContext('2d'), p = S.pal;
+  const cv = pooled('i1grid', GW + 40, GH + 40, true), c = cv.getContext('2d'), p = S.pal;
   c.clearRect(0, 0, cv.width, cv.height);
   c.fillStyle = css(p.win, 0.92); rrect(c, 4, 4, GW + 32, GH + 32, 26); c.fill();
   c.lineWidth = 4; c.strokeStyle = p.line; c.stroke();
@@ -353,7 +353,7 @@ function ui(ctx, S) {
     const msg = fact('ui_texts', 'server_busy') || '服务器繁忙，请稍后再试。';
     if (smash < 0) { toast(ctx, S, msg, 960, 560, busy, { size: 52 }); }
     else { // 碎片：toast 画进缓冲，切成小块飞散
-      const cv = pooled('i1toast', 1000, 160), tc = cv.getContext('2d');
+      const cv = pooled('i1toast', 1000, 160, true), tc = cv.getContext('2d');
       tc.clearRect(0, 0, 1000, 160); toast(tc, S, msg, 500, 80, 1, { size: 52 });
       const nx = 10, ny = 2, pw = 1000 / nx, ph = 160 / ny;
       for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {

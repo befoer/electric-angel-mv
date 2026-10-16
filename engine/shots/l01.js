@@ -15,7 +15,7 @@ import { rrect } from '../core/ui.js';
 import { satellite, tickRing } from '../core/struct22.js';
 import { flash, framed } from '../core/fx.js';
 import { makeState } from '../core/state.js';
-import { newCanvas } from '../core/env.js';
+import { hiCanvas } from '../core/env.js';
 import { card, leader, rows, dots, corners } from '../core/kit.js';
 import { drawFormula, slotText } from '../core/math.js';
 import { drawWindow, sideCards, WIN, T_DROP } from './intro.js';
@@ -39,13 +39,12 @@ const ASK = '唱首歌吧';
 // 第二十五轮（用户：0:15 立绘移动到右边并重新构图，左边的手不要裁切掉，去除嘴边的声波效果；第二十七轮并开关 l01r25）：
 // 半身像在屏幕右半边（右沿 1900），头顶在 300（右上「next token」卡下面）；左半边空出来给点阵「歌」，「歌」正好落在她摊开的手掌左上方。
 // 嘴边没有声波弧；卫星面板只有心电（右上、连到尾巴尖），头后的频谱环就是人声。
-const BUST25 = { sub: [0.03, 0, 0.92, 0.62], right: 1900, top: 300, h: 780, mouth: [0.478, 0.54], head: [0.4565, 0.355], hand: [0.109, 0.71], tail: [0.837, 0.42] };
-// 第二十六轮（用户：0:15 立绘手指还有点被裁切）。rev l01h26
+// 第二十六轮（用户：0:15 立绘手指还有点被裁切；开关 l01h26 第二十八轮并进代码）
 // 第二十五轮量手的位置用的是换最终版之前的 I03 网格图——最终版（3773×3896）里她伸出的手更靠左，指尖离原图左边缘只有几 px，
 // 3% 的裁切线正好切过手指。裁切框改成从 0% 起（到 99%，尾巴尖也在），嘴 / 头 / 手 / 尾巴的锚点在最终版上重量
 const BUST26 = { sub: [0, 0, 0.99, 0.62], right: 1900, top: 300, h: 780, mouth: [0.444, 0.566], head: [0.4545, 0.355], hand: [0.101, 0.781], tail: [0.929, 0.532] };
 export function bust24() { // 屏幕里（1920×1080 坐标）她的框、嘴、头、手、尾巴
-  const B = rev('l01h26') >= 26 ? BUST26 : BUST25, w = B.h * (B.sub[2] / B.sub[3]) * aspectOf('I03'), x = B.right - w, P = q => [x + q[0] * w, B.top + q[1] * B.h];
+  const B = BUST26, w = B.h * (B.sub[2] / B.sub[3]) * aspectOf('I03'), x = B.right - w, P = q => [x + q[0] * w, B.top + q[1] * B.h];
   return { x, y: B.top, w, h: B.h, sub: B.sub, mouth: P(B.mouth), head: P(B.head), hand: P(B.hand), tail: P(B.tail) };
 }
 export function mouth24(t) { const c = camAt(CAM, t); return camToScreen(c, 1, ...bust24().mouth); } // 嘴在屏幕画面里的位置（跟着 L01 的相机）
@@ -101,7 +100,7 @@ const OTHERS = [['饭', 0.03], ['鲸', 0.02], ['不', 0.01]];
 let WIN_IMG = null;
 function windowImage() {
   if (WIN_IMG) return WIN_IMG;
-  WIN_IMG = newCanvas(W, H);
+  WIN_IMG = hiCanvas(W, H);
   const t = T_DROP - 0.001;
   drawWindow(WIN_IMG.getContext('2d'), makeState(t), { t, done: true });
   return WIN_IMG;

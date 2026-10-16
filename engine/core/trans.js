@@ -282,7 +282,7 @@ function charPortal(ctx, A, B, u, S, p) {
   if (p.only) {
     // 第十二轮（用户：只露图、其余元素都藏起来，图要留在窗口里）：p.only(ctx, S) 只画 B 的人物（不带底色块和其他元素），
     // 从窗口右边滑进来，裁在 A 的窗口 p.clip 里（推进时窗口跟着变大，最后撑出画面，裁切自然消失）
-    const img = pooled('cpOnly', W, H), c = img.getContext('2d');
+    const img = pooled('cpOnly', W, H, true), c = img.getContext('2d');
     c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, W, H); p.only(c, S);
     const se = 1 - Math.pow(1 - clamp(ui / 0.85), 4), dx = (1 - se) * 260; // 四次缓出：快进慢停
     ctx.save();
@@ -346,7 +346,7 @@ function squareWipe(ctx, A, B, u, S) {
   ctx.drawImage(A, 0, 0);
   ctx.save(); region(ctx); ctx.clip(); ctx.drawImage(B, 0, 0); ctx.restore();
   {
-    const m = pooled('sqwipeMask', W, H), mc = m.getContext('2d'), o = pooled('sqwipeEdge', W, H), oc = o.getContext('2d');
+    const m = pooled('sqwipeMask', W, H, true), mc = m.getContext('2d'), o = pooled('sqwipeEdge', W, H, true), oc = o.getContext('2d');
     mc.clearRect(0, 0, W, H); mc.fillStyle = EDGE14; region(mc); mc.fill();
     oc.globalCompositeOperation = 'source-over'; oc.clearRect(0, 0, W, H);
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) oc.drawImage(m, dx, dy);

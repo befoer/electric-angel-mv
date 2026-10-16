@@ -54,7 +54,7 @@
 
 ## 4. 名字和界面文字
 
-角色名「鲸鱼娘」「DS娘」、DeepSeek 风格的对话界面、片尾的制作信息都写在镜头代码里，用编辑器全局搜一下就能找到（`engine/shots/`，尾奏的制作信息在 `outro.js` 开头）。配色在 `engine/core/color.js` 的 `PAL`（三段各一套：晴空 / 夜海 / 晨光）。
+角色名「DeepSeek 鲸鱼娘」「鲸鱼娘」「DS娘」、DeepSeek 风格的对话界面、片尾的制作信息都写在镜头代码里，用编辑器全局搜一下就能找到（`engine/shots/`，尾奏的制作信息在 `outro.js` 开头）。配色在 `engine/core/color.js` 的 `PAL`（三段各一套：晴空 / 夜海 / 晨光）。
 
 ## 5. 换歌
 

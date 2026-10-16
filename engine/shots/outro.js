@@ -5,7 +5,7 @@
 // 3：编制撤出，对话窗口回到中央，她的最后一条消息逐 token 输出；页脚「内容由 AI 生成，请仔细甄别」
 // 4：窗口缩进前奏那台显示器（同一个科技风机身，首尾呼应）；屏幕里像素鲸鱼游过、翻肚皮躺下；标题解码 → 散成像素 → 白场
 //    第二十轮（rev title20）：标题换成字标（core/logo.js，和前奏同一个），显示器缩的时候就开始打字
-import { W, H, CW, CH, BRAND, BEAT, STEP, DURATION } from '../core/const.js';
+import { W, H, CW, CH, BRAND, BEAT, STEP, DURATION, OUT_W, OUT_H } from '../core/const.js';
 import { barStart, beatTime, clamp, lerp, smooth, easeIn, easeOut, easeOutBack, decay } from '../core/time.js';
 import { rev } from '../rev.js';
 import { hash, rnd, vnoise } from '../core/rand.js';
@@ -39,6 +39,10 @@ const ROWS20 = {
   chara: [['角色', '鲸鱼娘 · 原设 上善无形'], ['女仆版设计', 'ZipZipPipe（CC BY-NC-SA 4.0）'], ['人设与梗', 'deepseek-whalechan · dafeiyu-persona'], ['LoRA', 'DeepSeek Whale Girl · civitai.com/models/2697171']],
   ref: [['', '《大肥鱼眼中的 world.execute(me);》']],
 };
+// 第二十八轮（用户：「翻唱：小缘」让人误解为和小缘合作了，其实只是用了小缘翻唱版的音乐，换个写法；「鲸鱼娘」改成「DeepSeek 鲸鱼娘」）。rev out28
+// Load Audio 第二行「翻唱 · 小缘 - 电子天使」→「音频 · 小缘翻唱版《电子天使》」；人设第一行「鲸鱼娘」→「DeepSeek 鲸鱼娘」。行在画帧时取（开关要在画帧时读）
+const ROWS28 = { audio: [ROWS20.audio[0], ['音频', '小缘翻唱版《电子天使》（BV1xs41167Ee）']], chara: [['角色', 'DeepSeek 鲸鱼娘 · 原设 上善无形'], ...ROWS20.chara.slice(1)] };
+const rows28 = id => (rev('out28') >= 28 ? ROWS28 : ROWS20)[id];
 const GREEN20 = '#3DDC84';
 
 // ---------------------------------------------------------------- 第二十二轮：工作流加细节（用户第二十二轮 2:52）。第二十四轮并开关 out22
@@ -51,8 +55,8 @@ const GREEN20 = '#3DDC84';
 const MODEL_ROWS22 = [['主力模型', 'Claude Opus 5.5'], ['打杂担当', 'DeepSeek-V4.1-Flash · GPT6.1 Sol（核对出处、跑渲染、抠蒙版）'], ['生图模型', 'Anima-aesthetic-v1.1 · gpt-image-2.5（表情包）'], ['视频模型', 'MiniMax H3']];
 const RH22 = 46;
 const NODES22 = [
-  { id: 'audio', title: 'Load Audio', x: 60, y: 110, w: 680, out: [['AUDIO', '#7FC8A9']], rows: ROWS20.audio },
-  { id: 'chara', title: 'Load LoRA · 人设', x: 60, y: 300, w: 680, out: [['MODEL', '#B39DDB']], rows: ROWS20.chara },
+  { id: 'audio', title: 'Load Audio', x: 60, y: 110, w: 680, out: [['AUDIO', '#7FC8A9']], get rows() { return rows28('audio'); } },
+  { id: 'chara', title: 'Load LoRA · 人设', x: 60, y: 300, w: 680, out: [['MODEL', '#B39DDB']], get rows() { return rows28('chara'); } },
   { id: 'models', title: 'Models · 模型', x: 60, y: 582, w: 680, out: [['MODEL', '#B39DDB']], rows: MODEL_ROWS22 },
   { id: 'clip', title: 'Load CLIP · 作者', x: 60, y: 864, w: 680, out: [['CLIP', '#E8C33A']], rows: [['作者', '烧猫定食']], author: true },
   { id: 'prompt', title: 'CLIP Text Encode · 修改意见', x: 800, y: 110, w: 460, h: 360, in: [['clip', '#E8C33A']], out: [['CONDITIONING', '#F2994A']], prompt: true },
@@ -116,8 +120,8 @@ function node22(ctx, S, n, i) {
   const act = a >= 0, done = act && a >= dur, run = act && !done, s = act ? 1 + 0.035 * Math.sin(Math.PI * clamp(a / 0.28)) : lerp(0.96, 1, ga);
   // 第二十六轮（用户：2:50 Preview Image 上那层让画面发暗的蓝紫色块还在，要去掉）：真正发暗的是这里——还没轮到执行的节点整个按 62% 不透明画，
   // Preview Image 在 KSampler 采样时就已经在放潜空间预览了，预览图（底下垫着深蓝 #1D2541）跟着变成一块发灰发紫的色块。
-  // 改成：预览开始放的那一刻，这个节点用 0.15 s 亮到完全不透明（它已经在工作了）。rev out26
-  const live26 = n.preview && rev('out26') >= 26 ? smooth(clamp((t - PV0()) / 0.15)) : 0;
+  // 改成：预览开始放的那一刻，这个节点用 0.15 s 亮到完全不透明（它已经在工作了）。开关 out26 第二十八轮并进代码
+  const live26 = n.preview ? smooth(clamp((t - PV0()) / 0.15)) : 0;
   ctx.save(); ctx.globalAlpha = act ? 1 : lerp(0.62 * ga, 1, live26);
   ctx.translate(n.x + n.w / 2, n.y + h / 2); ctx.scale(s, s); ctx.translate(-n.x - n.w / 2, -n.y - h / 2);
   const R = n.collapsed ? h / 2 : 14;
@@ -198,7 +202,7 @@ function node22(ctx, S, n, i) {
     else {
       ctx.fillStyle = '#1D2541'; rrect(ctx, x0, y0, w0, 140, 10); ctx.fill();
       ctx.font = fonts(30, 'SCB', 'J'); ctx.fillStyle = '#FFFFFF'; ctx.fillText(TITLE, x0 + 22, y0 + 40);
-      ctx.font = fonts(16, 'SC'); ctx.fillStyle = '#AEB6D8'; ctx.fillText(`${(DURATION - 0.6).toFixed(2)} s · 1920×1080 · 60 fps · ♥ 150 BPM`, x0 + 22, y0 + 82);
+      ctx.font = fonts(16, 'SC'); ctx.fillStyle = '#AEB6D8'; ctx.fillText(`${(DURATION - 0.6).toFixed(2)} s · ${OUT_W}×${OUT_H} · 60 fps · ♥ 150 BPM`, x0 + 22, y0 + 82);
       ctx.fillStyle = 'rgba(255,255,255,0.15)'; rrect(ctx, x0 + 22, y0 + 108, w0 - 44, 10, 5); ctx.fill();
       ctx.fillStyle = fin ? GREEN20 : BRAND; rrect(ctx, x0 + 22, y0 + 108, (w0 - 44) * prog, 10, 5); ctx.fill();
       ctx.font = fonts(17, 'SCB'); ctx.fillStyle = fin ? '#1FA86A' : '#55524C';
@@ -384,7 +388,7 @@ export function outro4(ctx, S) {
   ringScanner(ctx, S, CRT_C[0], CRT_C[1], sw * 0.62, { alpha: 0.35 * sh, seed: 9 });
   const g = crtGeometry(CRT_C[0], CRT_C[1], sw), [x, y, w, h] = g.screen;
   // 屏幕里：最后的窗口 + 像素鲸鱼游过、翻肚皮躺下
-  const buf = pooled('o4screen', W, H), b = buf.getContext('2d');
+  const buf = pooled('o4screen', W, H, true), b = buf.getContext('2d');
   b.setTransform(1, 0, 0, 1, 0, 0); b.fillStyle = p.bg; b.fillRect(0, 0, W, H);
   lastWindow(b, S, O4 - 0.01, { alpha: 1 - clamp((a - 0.6) / 0.4) });
   const swim = clamp((a - 0.7) / 1.0), wx = lerp(1700, 960, easeOut(swim)), flip = clamp((a - 1.7) / 0.3), wy = 560 + 20 * Math.sin(t * 3) * (1 - flip);

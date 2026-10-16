@@ -428,7 +428,7 @@ function her19(g, S) {
 const LAT19 = { NC: 5, NR: 3, NL: 4, TW: 640, TH: 460, SX: 780, SY: 540, SZ: 650, ANG: -0.38, F: 1100, Z0: 1500, Y0: -60 };
 function lattice19(g, S, u) {
   const p = S.pal, t = S.t, L = LAT19, ca = Math.cos(L.ANG), sa = Math.sin(L.ANG), X0 = lerp(380, -380, smooth(u));
-  const tex = Array.from({ length: 12 }, (_, k) => { const cv = pooled(`l19p${k}`, L.TW, L.TH), c = cv.getContext('2d'); c.clearRect(0, 0, L.TW, L.TH); panel19(c, S, k, 20, 34); return cv; });
+  const tex = Array.from({ length: 12 }, (_, k) => { const cv = pooled(`l19p${k}`, L.TW, L.TH, true), c = cv.getContext('2d'); c.clearRect(0, 0, L.TW, L.TH); panel19(c, S, k, 20, 34); return cv; });
   // 每块窗口的中心：先沿墙面方向排列（l），再沿法线往后（d）
   const at = (i, j, q) => { const l = (i - (L.NC - 1) / 2) * L.SX, d = q * L.SZ; return { X: X0 + l * ca - d * sa, Y: L.Y0 + (j - (L.NR - 1) / 2) * L.SY, Z: L.Z0 + l * sa + d * ca }; };
   const proj = (P, l, yy) => { const z = P.Z + l * sa; return [960 + ((P.X + l * ca) * L.F) / z, 540 + ((P.Y + yy) * L.F) / z]; };

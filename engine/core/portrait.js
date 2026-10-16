@@ -1,5 +1,5 @@
 // 立绘：素材登记与占位、抠白底、字符画、半块像素头像（视觉方案 §4.3、§4.4）
-import { ENV, newCanvas } from './env.js';
+import { ENV, newCanvas, hiCanvas } from './env.js';
 import { CW, CH, COLS } from './const.js';
 import { glyphs } from './glyphs.js';
 import { mix } from './color.js';
@@ -101,12 +101,13 @@ export function keyed(id, sub = null, maxDim = 1024) {
 // 按目标尺寸缓存的裁切图（cover 方式填满 w×h）。素材原图很大（I01 3577×7424），镜头里一律用它或 keyed()，
 // 不要每帧从原图缩放。o.keyed：先抠白底 / 用透明通道（全身、半身立绘用），否则保留原底色（特写、拼贴用）
 const PHOTO = new Map();
-export function photo(id, sub, w, h, { keyed: useKey = false } = {}) {
-  const k = `${id}|${sub}|${w}|${h}|${useKey}`;
+// o.hi：出片超采样时缓存成高清画布（默认；拿来逐像素取样的小图传 false）
+export function photo(id, sub, w, h, { keyed: useKey = false, hi = true } = {}) {
+  const k = `${id}|${sub}|${w}|${h}|${useKey}|${hi}`;
   let cv = PHOTO.get(k);
   if (cv) return cv;
   w = Math.round(w); h = Math.round(h);
-  cv = newCanvas(w, h);
+  cv = hi ? hiCanvas(w, h) : newCanvas(w, h);
   const c = cv.getContext('2d');
   if (useKey) {
     const src = keyed(id, sub, Math.max(w, h) * 2), sc = Math.min(w / src.width, h / src.height);

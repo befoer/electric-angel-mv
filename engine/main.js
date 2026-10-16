@@ -1,5 +1,5 @@
 // 引擎入口：浏览器预览与 Node 出片共用（项目方案 §3.2）
-import { ENV, newCanvas } from './core/env.js';
+import { ENV, hiCanvas, setSuperSample } from './core/env.js';
 import { W, H, FPS } from './core/const.js';
 import { registerFonts } from './core/glyphs.js';
 import { loadData } from './core/data.js';
@@ -16,8 +16,10 @@ import { setMemoryRenderer } from './core/memory.js';
 export { W, H, FPS, DURATION, NFRAMES } from './core/const.js';
 export { SHOTS, shotAt } from './timeline.js';
 
-export async function initEngine(platform) {
+// o.ss：超采样倍数（出片传 const.js 的 SS；预览、总览图不传，= 1）
+export async function initEngine(platform, { ss = 1 } = {}) {
   ENV.P = platform;
+  setSuperSample(ss);
   await registerFonts();
   await loadData();
   await loadFormulas();
@@ -40,7 +42,7 @@ function drawShot(ctx, shot, t) {
 
 // 转场用的两块缓冲（只建一次）
 let BUF = null;
-const bufs = () => BUF || (BUF = [newCanvas(W, H), newCanvas(W, H)]);
+const bufs = () => BUF || (BUF = [hiCanvas(W, H), hiCanvas(W, H)]);
 
 // 第二十轮：画时刻 t 之前先调用（await），把这一刻要用的视频帧解码好（core/frames.js）。出片 / 总览图每帧都要先调它
 export const prepareFrame = t => prefetchFrames(t);

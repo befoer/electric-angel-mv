@@ -14,7 +14,7 @@ import { beatSprites, drawBeatSprites, drawSprite, spriteCells, offbeatFlashes }
 import { fact, onset } from '../core/data.js';
 import { photo, halftone } from '../core/portrait.js';
 import { flash, framed, drawCover } from '../core/fx.js';
-import { newCanvas } from '../core/env.js';
+import { newCanvas, hiCanvas } from '../core/env.js';
 import { rrect } from '../core/ui.js';
 import { css, mix } from '../core/color.js';
 import { card, leader, ring, dots, hatch, popIn } from '../core/kit.js';
@@ -42,7 +42,7 @@ const SUB = [0.11, 0.03, 0.70, 0.80];
 let PORTRAIT = null;
 function portrait(w, h) {
   if (PORTRAIT) return PORTRAIT;
-  PORTRAIT = newCanvas(w, h);
+  PORTRAIT = hiCanvas(w, h);
   const c = PORTRAIT.getContext('2d');
   c.drawImage(photo('I03', SUB, w, h), 0, 0);
   c.globalAlpha = 0.35;
@@ -179,15 +179,15 @@ function nurture24(ctx, S, k) {
   if (a0 < 0) return;
   const tile = (x, y, s, sz, pop, hot) => { ctx.save(); ctx.translate(x, y); ctx.scale(pop, pop); ctx.fillStyle = '#FFFFFF'; rrect(ctx, -sz / 2, -sz / 2, sz, sz, 14); ctx.fill(); ctx.lineWidth = hot ? 4 : 2.5; ctx.strokeStyle = hot ? pal.acc[0] : BRAND; ctx.stroke(); drawSprite(ctx, s, sz > 70 ? 6 : 5, pal, 0, 0); ctx.restore(); };
   // 角色栏
-  // 第二十六轮（用户：0:24 人物上方的等级增加快速增加，exp 条也快速滚动）。rev l04v26
+  // 第二十六轮（用户：0:24 人物上方的等级增加快速增加，exp 条也快速滚动；开关 l04v26 第二十八轮并进代码）
   // 等级从 Lv.17 起一级级往上冲：每秒升 4 级、匀加到 12 级（这一句约 2.5 s 冲到三十几级，之后保持 12 级 / 秒）——升级数按速度对时间积分，不跳；
   // EXP 条每升一级从 0 涨满一次（满的那一下闪白），所以是一直在"滚"；圆章每升一级弹一下，数字往上滚一格；EXP 读数的分母跟着等级涨（演出值）
   // 第二十七轮（用户：0:24 等级提升速度一开始慢点，然后再加快）。rev l04v27
   // 速度从每秒 0.8 级起、按平方曲线加到 14 级 / 秒（2.6 s 时），之后保持：头一级要涨约 0.85 s（看得清 EXP 条一点点涨满），
   // 第二、三级各约 0.3、0.25 s，再往后越来越快（这一句最后到三十级出头）；仍按速度对时间积分，不跳
-  { const pa = popIn(S, a0, 0.16), v26 = rev('l04v26') >= 26;
+  { const pa = popIn(S, a0, 0.16);
     let lv = 17, exp = 0.42 + 0.5 * smooth(clamp((t - TA()) / (T_STICK() - TA() + 0.6))), pop = 0, roll = 1, need = 2000;
-    if (v26) {
+    {
       const d = a0, v27 = rev('l04v27') >= 27;
       let P, rate;
       if (v27) { const D = 2.6, r0 = 0.8, r1 = 14; P = d < D ? r0 * d + ((r1 - r0) * d ** 3) / (3 * D * D) : r0 * D + ((r1 - r0) * D) / 3 + r1 * (d - D); rate = d < D ? r0 + (r1 - r0) * (d / D) ** 2 : r1; }
@@ -198,13 +198,13 @@ function nurture24(ctx, S, k) {
     ctx.save(); ctx.scale(1 + 0.16 * pop, 1 + 0.16 * pop);
     ctx.fillStyle = BRAND; ctx.beginPath(); ctx.arc(0, 0, 32, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = pop > 0.3 ? mix('#FFFFFF', '#FFD872', pop) : '#FFFFFF'; ctx.stroke();
     ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.font = font('ZENB', 13); ctx.fillText('Lv', 0, -8); ctx.font = font('ZENB', 24);
-    if (v26 && roll < 1) { ctx.save(); ctx.beginPath(); ctx.rect(-26, -2, 52, 26); ctx.clip(); ctx.fillText(String(lv - 1), 0, 18 - 22 * roll); ctx.fillText(String(lv), 0, 18 + 22 * (1 - roll)); ctx.restore(); }
+    if (roll < 1) { ctx.save(); ctx.beginPath(); ctx.rect(-26, -2, 52, 26); ctx.clip(); ctx.fillText(String(lv - 1), 0, 18 - 22 * roll); ctx.fillText(String(lv), 0, 18 + 22 * (1 - roll)); ctx.restore(); }
     else ctx.fillText(String(lv), 0, 18);
     ctx.restore();
     ctx.textAlign = 'left'; ctx.fillStyle = '#FFFFFF'; rrect(ctx, 44, -30, 196, 36, 18); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = BRAND; ctx.stroke();
     ctx.font = font('ZENB', 20); ctx.fillStyle = BRAND; ctx.fillText('鲸鱼娘 · 女仆', 60, -5);
     ctx.fillStyle = css(BRAND, 0.15); rrect(ctx, 48, 14, 340, 12, 6); ctx.fill(); ctx.fillStyle = pal.acc[0]; rrect(ctx, 48, 14, Math.max(12, 340 * exp), 12, 6); ctx.fill();
-    if (v26 && pop > 0.05) { ctx.fillStyle = css('#FFFFFF', 0.8 * pop); rrect(ctx, 48, 14, 340, 12, 6); ctx.fill(); } // 涨满那一下闪白
+    if (pop > 0.05) { ctx.fillStyle = css('#FFFFFF', 0.8 * pop); rrect(ctx, 48, 14, 340, 12, 6); ctx.fill(); } // 涨满那一下闪白
     ctx.font = font('ZENB', 14); ctx.fillStyle = pal.gray; ctx.fillText(`EXP ${Math.round(need * exp)} / ${need}`, 398, 25);
     ctx.restore(); }
   // 属性格

@@ -64,7 +64,7 @@ const WIN13B = [ // [X, Y, Z, 转角, 内容, 倍数]
   [-700, 430, 1000, 0.45, 6, 0.6], [720, -60, 2700, -0.35, 0, 0.45],
 ];
 function miniChat(S, k) {
-  const cv = pooled(`l13mini${k}`, 520, 360);
+  const cv = pooled(`l13mini${k}`, 520, 360, true);
   if (cv.__done) return cv;
   const c = cv.getContext('2d'), p = S.pal, x = 6, y = 6, w = 500, h = 340, bar = 46;
   c.clearRect(0, 0, 520, 360);
@@ -186,7 +186,7 @@ let COOL = null;
 function coolHer(p) { // I02 半身抠图，压冷一档（缓存）
   if (COOL) return COOL;
   const src = photo('I06', null, 808, 1000, { keyed: true }); // 第八轮：换成 I06 抱膝（和 L13 海平线上的她是同一个姿势）
-  COOL = pooled('l14cool', src.width, src.height);
+  COOL = pooled('l14cool', src.width, src.height, true);
   const c = COOL.getContext('2d');
   c.drawImage(src, 0, 0); c.globalCompositeOperation = 'source-atop'; c.fillStyle = css('#6E6AF0', 0.22); c.fillRect(0, 0, src.width, src.height);
   return COOL;
@@ -222,7 +222,7 @@ function erase14(g, S, src, x, y) {
   // 第十三轮（用户：变成粒子以后边上还留着一圈锯齿、一直不消失）：那是透明度很低、没算进格子的软边像素——扫过去时所有格子一起挖掉，不只是有内容的格子
   for (let i = 0; i < E.teAll.length; i++) if (t >= E.teAll[i]) md[i * 4 + 3] = 0;
   E.mctx.putImageData(E.md, 0, 0);
-  const body = pooled('l14body', src.width, src.height), bc = body.getContext('2d');
+  const body = pooled('l14body', src.width, src.height, true), bc = body.getContext('2d');
   bc.globalCompositeOperation = 'source-over'; bc.clearRect(0, 0, body.width, body.height); bc.drawImage(src, 0, 0);
   bc.globalCompositeOperation = 'destination-in'; bc.imageSmoothingEnabled = false;
   bc.drawImage(E.mask, 0, 0, E.cols * T, E.rows * T);

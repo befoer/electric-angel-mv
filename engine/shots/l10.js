@@ -12,7 +12,7 @@ import { keyword, onset } from '../core/data.js';
 import { rev } from '../rev.js';
 import { photo } from '../core/portrait.js';
 import { framed } from '../core/fx.js';
-import { newCanvas } from '../core/env.js';
+import { newCanvas, hiCanvas } from '../core/env.js';
 import { hud } from '../core/hud.js';
 import { camAt, withCam } from '../core/cam.js';
 import { paper, backDeco, frontDeco, punch, formulaFx } from './scene.js';
@@ -86,7 +86,7 @@ function tinted(src, color) {
   const k = `${src.width}x${src.height}|${color}`;
   let cv = TINT.get(k);
   if (cv) return cv;
-  cv = newCanvas(src.width, src.height);
+  cv = src.__ss ? hiCanvas(src.width, src.height) : newCanvas(src.width, src.height);
   const c = cv.getContext('2d');
   c.drawImage(src, 0, 0); c.globalCompositeOperation = 'source-in'; c.fillStyle = color; c.fillRect(0, 0, cv.width, cv.height);
   TINT.set(k, cv);

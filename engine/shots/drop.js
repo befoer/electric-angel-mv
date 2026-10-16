@@ -32,12 +32,11 @@ function geCells(ch) {
   GE14_CELLS = { ch, list };
   return list;
 }
-// 第二十五轮（用户：0:15 人物左边「歌」字还没出来的时候的空白增加些东西；「歌」字最后不要收回去）。rev l01s26
+// 第二十五轮（用户：0:15 人物左边「歌」字还没出来的时候的空白增加些东西；「歌」字最后不要收回去）。开关 l01s26 第二十八轮并进代码
 // · 落点后 0.25 s 起，「歌」将要拼出来的那块地方先出现一张淡淡的 52×52 点阵格 + 灰色取景框，格子里每个十六分音符按候选概率闪一个候选字的点阵
 //   （歌 / 饭 / 鲸 / 不，和屏幕右上「next token」卡同一组，歌的概率从 0.34 涨到 0.92，越往后越常是它），下面标签写 p(歌)；
 //   唱到「歌」时真正的点从她嘴里飞进来盖住它，候选格淡掉——"采样"落定成这个字
 // · 拼好的「歌」一直留到这个镜头结束（跟着甩镜进 L02），不再被吸回她嘴里；取景框和标签也一直在
-const s26 = () => rev('l01s26') >= 26;
 
 let GE26 = null;
 function candCells(ch) { // 候选字的格子（和 geCells 同样取样，按字缓存）
@@ -68,21 +67,19 @@ function geSampling(ctx, S, pOut, kw, a) {
   ctx.fillText(`sampling · next token · p(${kw.c}) = ${cs[0].v}`, pOut[0] - half, pOut[1] + half + 10); ctx.textBaseline = 'alphabetic';
   ctx.restore();
 }
-// 第二十六轮（l01h26）：她的手在最终版 I03 里更靠左，「歌」的取景框右下角会压到指尖，整个字往上挪 20 px
-const geOut = g => [g.cx - 340, g.cy - (rev('l01h26') >= 26 ? 60 : 40)];
+// 第二十六轮：她的手在最终版 I03 里更靠左，「歌」的取景框右下角会压到指尖，整个字往上挪 20 px（开关 l01h26 第二十八轮并进代码）
+const geOut = g => [g.cx - 340, g.cy - 60];
 function geDots(ctx, S, g, kw, a) {
-  const keep = s26();
-  if (keep && a < 0) { geSampling(ctx, S, geOut(g), kw, a); return; }
-  if (a < 0 || (a >= 1.45 && !keep)) return;
+  if (a < 0) { geSampling(ctx, S, geOut(g), kw, a); return; }
   // 第二十四轮：屏幕里是正在唱的她（l01.js singer24），点从她嘴里飞出来、在她左边拼成字（不挡她的脸）；显示器中心会往下挪，落点跟着走（第二十六轮并开关 l01d24）
   const [x, y, w, h] = g.screen, m = mouth24(S.t);
   const pIn = [x + w * (m[0] / W), y + h * (m[1] / H)], pOut = geOut(g), p = S.pal, { N, PITCH, DOT } = GE14;
-  if (keep) geSampling(ctx, S, pOut, kw, a); // 候选格在真正的点飞进来时淡掉
+  geSampling(ctx, S, pOut, kw, a); // 候选格在真正的点飞进来时淡掉
   const cells = geCells(kw.c), ox = pOut[0] - (N * PITCH) / 2, oy = pOut[1] - (N * PITCH) / 2;
   const scan = clamp((a - 0.45) / 0.4);
   ctx.save();
-  // 取景框和标签：落定后出现，收回前淡掉（第二十五轮起不收回，一直在）
-  const fr = clamp((a - 0.36) / 0.14) * (keep ? 1 : 1 - clamp((a - 1.0) / 0.1));
+  // 取景框和标签：落定后出现，一直在（第二十五轮起不收回）
+  const fr = clamp((a - 0.36) / 0.14);
   if (fr > 0) {
     const half = (N * PITCH) / 2 + 30, L = 46, o = 18 * (1 - easeOut(clamp((a - 0.36) / 0.2)));
     ctx.globalAlpha = fr; ctx.strokeStyle = BRAND; ctx.lineWidth = 3; ctx.beginPath();
@@ -96,17 +93,14 @@ function geDots(ctx, S, g, kw, a) {
   const sp = ((w / W) * 560) / (N * PITCH), sx0 = pIn[0] - (N * PITCH * sp) / 2, sy0 = pIn[1] - (N * PITCH * sp) / 2;
   for (const layer of [1, 0]) for (const c of cells) {
     const d0 = 0.06 + 0.26 * c.r + rnd(c.k, 31) * 0.05, fa = (a - d0) / 0.22; // 飞出（字中心先走）
-    const d1 = keep ? Infinity : 1.0 + 0.3 * (1 - c.r) + rnd(c.k, 32) * 0.05, ba = clamp((a - d1) / 0.13); // 收回（外圈先走；第二十五轮起不收回）
-    if (ba >= 1) continue;
     const e = easeOutBack(clamp(fa), 1.5), tx = ox + c.i * PITCH, ty = oy + c.j * PITCH, fx = sx0 + c.i * PITCH * sp, fy = sy0 + c.j * PITCH * sp;
     const bend = (rnd(c.k, 33) - 0.5) * 220, mx = (fx + tx) / 2 + bend, my = (fy + ty) / 2 - 100 * rnd(c.k, 34);
     const fe = clamp(fa), q = 1 - fe; // 二次贝塞尔：小字里的位置 → 控制点 → 大字里的位置
     let px = q * q * fx + 2 * q * fe * mx + fe * fe * tx, py = q * q * fy + 2 * q * fe * my + fe * fe * ty;
-    if (ba > 0) { const be = easeIn(ba); px = lerp(px, pIn[0], be); py = lerp(py, pIn[1], be); }
     // 每拍从字中心往外荡一圈放大
-    const ripple = Math.max(0, 1 - Math.abs(S.sub * 2.2 - c.r) * 4) * (a > 0.45 && (a < 1.0 || keep) ? 1 : 0);
+    const ripple = Math.max(0, 1 - Math.abs(S.sub * 2.2 - c.r) * 4) * (a > 0.45 ? 1 : 0);
     const born = clamp(a / 0.06), small = DOT * sp * 1.1 * born;
-    const s = (fa <= 0 ? small : lerp(small, DOT, fa < 1 ? e : 1)) * (1 + 0.35 * ripple) * (1 - 0.6 * easeIn(ba));
+    const s = (fa <= 0 ? small : lerp(small, DOT, fa < 1 ? e : 1)) * (1 + 0.35 * ripple);
     const lit = scan > 0 && scan < 1 && Math.abs(c.j / N - scan) < 0.06;
     if (layer) { ctx.fillStyle = css('#9DB0F5', 0.45); ctx.fillRect(px - s / 2 + 3, py - s / 2 + 3, s, s); continue; }
     ctx.fillStyle = lit ? '#FFFFFF' : c.k % 23 === 0 ? p.acc[0] : css(BRAND, 0.72 + 0.28 * rnd(c.k, 35));

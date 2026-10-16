@@ -141,7 +141,7 @@ export function l07(ctx, S) {
     }
     list.sort((a, b) => b.Z - a.Z);
     for (const p of list) {
-      const key = ((p.i % 7) + 7) % 7, cv = pooled(`l07f${key}`, PW, PH);
+      const key = ((p.i % 7) + 7) % 7, cv = pooled(`l07f${key}`, PW, PH, true);
       drawPanel(cv, S, p.i, scrollOf(p.i, S.t), false);
       const blur = 1 + 5.5 * clamp(Math.abs(p.d) - 0.12) + Math.min(4, v * 0.9);
       const src = blur > 1.25 ? softCopy(cv, blur, `f${key}`) : cv;

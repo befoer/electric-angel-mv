@@ -534,7 +534,7 @@ function mergeAll(ctx, S, F) {
     if (bgA > 0) { ctx.globalAlpha = bgA; ctx.fillStyle = BG[kind] ?? PAPER; ctx.fillRect(x, y, w, h); ctx.globalAlpha = 1; }
     ctx.globalAlpha = 1 - 0.55 * mi;
     if ((kind === 'depth' || kind === 'normal') && bgA < 1) { // 这两种图自带不透明的底，飞的时候用她的剪影裁出来
-      const buf = pooled('j2mergeL', W, H), c = buf.getContext('2d');
+      const buf = pooled('j2mergeL', W, H, true), c = buf.getContext('2d');
       c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);
       mapRect(c, S, kind, F, [x, y, w, h], VF, { bg: false });
       c.globalCompositeOperation = 'destination-in'; c.save(); c.translate(x, y); c.scale(w / W, h / H); drawVid(c, solid(maskFrame(F.id, F.k, { fade: 0 }), '#FFFFFF', 'j2mergem'), VF); c.restore();
@@ -580,7 +580,7 @@ function art89(ctx, S, F) {
   mapFull(ctx, S, 'cel', F, V);
   if (d <= 0) return;
   const b = segBox(F.id, F.k), fx = vx(V, (b.x0 + b.x1) / 2), fy = vy(V, b.y0 + 0.1 * (b.y1 - b.y0)), R = 1500 * smooth(d) ** 1.2;
-  const buf = pooled('j2real', W, H), c = buf.getContext('2d');
+  const buf = pooled('j2real', W, H, true), c = buf.getContext('2d');
   c.setTransform(1, 0, 0, 1, 0, 0); c.globalCompositeOperation = 'source-over'; c.clearRect(0, 0, W, H);
   if (!realFrame(c, S, V)) return;
   c.globalCompositeOperation = 'destination-in';

@@ -577,9 +577,9 @@ function linkStart25(ctx, S, cx, cy) {
     const r0 = 30 + 1500 * ph * ph, len = (24 + 420 * ph * ph) * lk * (0.75 + 0.25 * sNow) * (fine ? 0.6 : 1);
     const a = Math.sin(Math.PI * Math.min(1, ph * 1.4)) * (0.3 + 0.45 * rnd(i, 3204)) * (fine ? 0.6 : 1);
     if (a <= 0.01) continue;
-    // 第二十六轮（用户：02:48 背景细线太细了，增加随机粗细）：每根一个随机粗细（多数 2–4 px、少数 8–12 px），越往外越粗。rev l32w26
+    // 第二十六轮（用户：02:48 背景细线太细了，增加随机粗细）：每根一个随机粗细（多数 2–4 px、少数 8–12 px），越往外越粗。开关 l32w26 第二十八轮并进代码
     const wr = rnd(i, 3207), lw26 = (wr < 0.75 ? 2 + 2.7 * wr : 4 + (wr - 0.75) * 32) * (0.55 + 0.75 * ph) * (fine ? 0.6 : 1);
-    ctx.strokeStyle = css(LS_COL[i % LS_COL.length], a); ctx.lineWidth = rev('l32w26') >= 26 ? lw26 : fine ? 1 + 1.5 * ph : 1.5 + 4 * ph * rnd(i, 3205);
+    ctx.strokeStyle = css(LS_COL[i % LS_COL.length], a); ctx.lineWidth = lw26; // 开关 l32w26 第二十八轮并进代码
     ctx.beginPath(); ctx.moveTo(cx + Math.cos(an) * r0, cy + Math.sin(an) * r0); ctx.lineTo(cx + Math.cos(an) * (r0 + len), cy + Math.sin(an) * (r0 + len)); ctx.stroke();
   }
   const core = clamp((sNow - 1) / 1.6), gl = ctx.createRadialGradient(cx, cy, 0, cx, cy, 260 + 140 * core); gl.addColorStop(0, css('#FFFFFF', 0.35 * core)); gl.addColorStop(1, css('#FFFFFF', 0));

@@ -69,7 +69,7 @@ function drawChar(ctx, S, M, st, k, o, tile, ink, shade) {
   ctx.globalAlpha *= st.alpha ?? 1;
   ctx.translate(st.x, st.y); if (st.r) ctx.rotate(st.r); if (st.s != null && st.s !== 1) ctx.scale(st.s, st.s); ctx.translate(-M.cx, -M.base);
   if (crisp > 0) {
-    const be = pooled('btE', w, h), bf = pooled('btF', w, h), bs = pooled('btS', w, h);
+    const be = pooled('btE', w, h, true), bf = pooled('btF', w, h, true), bs = pooled('btS', w, h, true);
     const [ge, gf, gs] = [be, bf, bs].map(b => { const g = b.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.clearRect(0, 0, w, h); return g; });
     const code = glyphs('SCB', ink), tick = Math.floor(t * 3);
     ge.fillStyle = o.edge ?? '#FFFFFF';

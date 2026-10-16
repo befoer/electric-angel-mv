@@ -30,7 +30,7 @@ export function lxx(ctx, S) {
 
 ```
 node render/serve.mjs                       预览：http://127.0.0.1:8099/engine/index.html
-node render/render.mjs --png 14.6 16.2      导出单帧 → out/单帧/frame_14.600.png（并打印绘制耗时）
+node render/render.mjs --png 14.6 16.2      导出单帧（出片尺寸，现在是 3840×2160）→ out/单帧/frame_14.600.png（并打印绘制耗时）；--ss 1 不超采样
 node render/sheet.mjs --every 1 --from 0 --to 53 --out out/单帧/s.png   总览图（直接用引擎画）；--trans 每个转场 6 张；--at 指定时刻
 node render/render.mjs --bars 1-12          出片第 1–12 小节 → out/bars_1-12.mp4（--out 指定位置，每轮放 out/第N轮/）
 node render/render.mjs --preset veryfast    粗剪用快速编码；终渲用默认 medium
@@ -311,7 +311,7 @@ export function myShot(ctx, S) { ... }   // 在 timeline.js 的 TABLE 里登记
 **每轮开工**：根目录的 `NN轮修改方案.md` 先复制到 `归档/修改方案/`；`scripts/credits_prompt.mjs` 的 `ROUNDS` 加一行再跑。
 ## 第二十四轮补充
 
-**封面**：`engine/shots/cover.js` 的 `cover(ctx, S, { h, img })` 画一帧封面（不进镜头表），`node render/cover.mjs` 出 `out/封面/封面_晴空.png`（+ `_1920x1200`）和 `out/单帧/封面_缩略图核对.png`。第二十七轮重做：主图 `assets/illust/封面主图.png` 由 `cover.mjs` 读好传进来（`img`），不进素材表；主图里空着的气泡、输入框由代码填字（原图坐标，`inImage` 换算）；标题「电子天使」是代码画的点阵字，不用生图。
+**封面**：现在的画法和用法见下面「第二十八轮补充」。
 
 **V11_3**：`core/frames.js` 的 `loadFrames` 加了 `V11_3`（`build/frames/V11_3/` 124 张 + `V11_3_track.json`）。L29 的视频时间是 `v3b.js` 的 `vt24(t)`：锚点表 `A24` + 单调三次插值。第二十五轮起帧是从用户超分的 `assets/video/V11_3_1_ghq5.mp4` 抽的（1920×1080 是从 7:4 横向拉伸的，抽的时候缩回 1890×1080）：`ffmpeg -i assets/video/V11_3_1_ghq5.mp4 -vf scale=1890:1080:flags=lanczos -q:v 3 build/frames/V11_3/%03d.jpg`（先清掉旧帧；别用 `video_frames.mjs V11_3`，它找的超分前原版第二十七轮删了）。超分版每帧左右自带 14 / 16 px 黑边，`v113Cut` 抠图前把它当底色、画原图时跳过。换成别的视频的话：抽帧、`.venv\Scripts\python.exe -I scripts\video_track.py V11_3`，再按新视频的动作改 `A24` 和 `CLICK24 / PAT24 / CONNECT24 / TOUCH24`。
 
@@ -350,4 +350,14 @@ export function myShot(ctx, S) { ... }   // 在 timeline.js 的 TABLE 里登记
 
 **导出公开仓库**：`node scripts/export_github.mjs [目标文件夹]` 按白名单复制（不带音频、人声分轨、歌词、原始视频、没用到的素材和字重、内部文档），再叠上项目根目录 `github/` 里给公开仓库写的 README、LICENSE、NOTICE、.gitignore、docs/。目标文件夹里除了 `.git`、`node_modules` 都会先清空。字体不导出；立绘在副本里缩小（长边超过 2048 px 的缩到 2048，B / S 系列缩到 1024——代码里它们最大只画到 512 px）。复制完在副本里把注释和文档里的歌词片段换成 ♪（JS 只改注释，用一个小词法扫描认出字符串、模板字符串、正则；改过的 JS 自动 `node --check`）——项目里的原文件不动（用户：自己的文件夹全部保留）。
 
-**封面**：`engine/shots/cover.js` 重写成编辑排版的拼贴（选择框、参考线、小窗口、标题卡），`cover(ctx, S, { img })`，只出 1920×1080，见 `文档/视频封面设计方案.md`。
+**封面**：`engine/shots/cover.js`（`cover(ctx, S, { img })`，只出 1920×1080，不超采样），倾斜的窗口拼贴 + 以脸框为基准的网格、文字组和识别框，见 `文档/视频封面设计方案.md`。`node render/cover.mjs` 增量保存：接着 `out/封面/` 里最大的编号存 `封面_NN.png`（`封面3.png`、`封面_03.png` 两种写法都认）。封面上写的分辨率跟着 `OUT_W`×`OUT_H` 走。背景窗口里的片子画面用 `memoryFrame` 取，要在画别的之前先取。
+
+**出片尺寸和超采样**（用户：视频改成 2560×1440；后来定成直接放大 2 倍、出 3840×2160，不再缩）：
+- `core/const.js` 的 `OUT_W, OUT_H, SS`：现在是 3840、2160、2。**镜头里的坐标一律还是 W×H（1920×1080）**，不用改。出片时 `render.mjs` 在 SS 倍的画布上画，正好就是 3840×2160，直接交给 ffmpeg；OUT 和 SS 倍的尺寸不一样时（比如 `--ss 1` 草稿，或以后要别的尺寸）才用高质量插值缩放一次。改回 1920、1080、1 就是原来的 1080p（公开仓库导出时自动改回这个）。
+- 只用整数倍（SS = 2），不按 4/3 之类直接画：非整数倍时相邻色块的边落在半个像素上，抗锯齿会在每条接缝留一道浅色细缝（字符格、马赛克到处都是）。2 倍时边都在整像素上，没有缝。
+- **高清画布** `hiCanvas(w, h)`（`core/env.js`）、`pooled(key, w, h, true)`：底层 SS 倍大、自带 SS 倍的变换，对外仍按逻辑像素——`width` / `height`、`setTransform` / `getTransform`、`filter` 和 `shadowBlur` / `shadowOffset` 里的像素数（Skia 里这几样不跟变换缩放，这里替它乘 SS）、当源图 `drawImage` 时的源矩形、`getImageData` / `putImageData`（读时缩回逻辑尺寸、写时最近邻放大）。SS = 1 时它就是 `newCanvas`。
+- **哪些是高清的**：主画布、转场的两块整屏缓冲、所有整屏 `pooled(…, W, H, true)`、字形图集页、`photo()` 缓存的立绘（传 `{ hi: false }` 不要）、合成立绘 / 面板的缓存（l02、l04、l06 手、l07 前排面板、l11、l13 迷你窗、l14、l19 透视墙窗口、l28 logit lens、i1 网格和 toast、字标和巨字的缓冲、公式墙纸、高清图的染色副本）。
+- **哪些故意不是**：拿来逐像素取样的小图（马赛克、粒子、字形蒙版、分区图）、靠低分辨率出效果的（像素化转场、潜空间预览、景深模糊的小缓冲）、视频帧和由它抠出来的缓存（源就是 1080p）、`keyed()` 抠图（`photo` 会按 2 倍取它，够用）。这些画上去时跟着放大，清晰度和以前的 1080p 一样。
+- 写新镜头：要画大的缓存、整屏缓冲用 `hiCanvas` / `pooled(…, true)`；要逐像素读写的小图用 `newCanvas`。不要拿高清画布每帧 `getImageData`（要先缩一次，慢）。
+- **耗时和内存**：超采样后平均每帧绘制约 0.5 s（1080p 约 0.2 s），加上 4K 编码，这台 2 核机器上约 1 s 一帧；每个进程约 4.5 GB 内存（画帧约 2.7 GB + 它的 ffmpeg 编 4K 约 1.8 GB）。内存不够时 Skia 不一定报错，画面里会悄悄少东西（实测：四个进程同时跑时有几帧窗口内容全空），所以 `render.mjs` 默认的进程数按"总内存 / 4.5 GB"封顶。CRF 16 时码率约 29 Mbps（全片约 700 MB）。
+- 核对办法：同一批时刻 `--ss 1` 和超采样各画一遍、都缩到 960×540 比，差别应该只在边缘（每 32 px 块的平均差 ≤ 约 20/255）；整块不一样就是哪里坏了。

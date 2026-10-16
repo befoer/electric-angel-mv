@@ -1,10 +1,12 @@
 # 如果代码能长出海
 
-鲸鱼娘 × 小缘翻唱《电子天使》的非商业二创 MV，**每一帧都由代码画出来**：没有 AE、没有剪辑软件，一个用纯 JavaScript + Canvas 写的小引擎，给定时刻 t 就画出那一帧（191.69 s、1920×1080、60 fps）。
+![封面](docs/cover.jpg)
 
-> An unofficial, non-commercial fan MV for "電子天使 / Electric Angel" (cover by 小缘), featuring the DeepSeek whale-girl fan character. Every frame is a pure function of time `t`, drawn by a small JavaScript Canvas engine (Node + `@napi-rs/canvas` for rendering, the same code runs in the browser for preview). Song audio and lyrics are **not** included.
+以 DeepSeek 鲸鱼娘为主角的非商业二创 MV（音乐用的是小缘翻唱版《电子天使》的音频），**每一帧都由代码画出来**：没有 AE、没有剪辑软件，一个用纯 JavaScript + Canvas 写的小引擎，给定时刻 t 就画出那一帧（191.69 s、60 fps；公开版默认出 1920×1080，成片是把 `engine/core/const.js` 里的出片尺寸改成按 2 倍画、出 3840×2160）。
 
-非官方作品，与 DeepSeek 及原曲、翻唱的作者都没有关联。
+> An unofficial, non-commercial fan MV for "電子天使 / Electric Angel" (the soundtrack is 小缘's cover version), featuring the DeepSeek whale-girl fan character (DeepSeek 鲸鱼娘). Every frame is a pure function of time `t`, drawn by a small JavaScript Canvas engine (Node + `@napi-rs/canvas` for rendering, the same code runs in the browser for preview). Song audio and lyrics are **not** included.
+
+非官方作品，与 DeepSeek、原曲作者和翻唱者都没有关联，只是使用了小缘翻唱版的音频。
 
 ## 仓库里有什么、没有什么
 
@@ -60,6 +62,6 @@ assets/         立绘（illust/，manifest.json 登记编号 → 文件）；�
 - 代码（`engine/` `render/` `scripts/`）：MIT，见 [LICENSE](LICENSE)。
 - 角色立绘、表情包、封面主图和从它们算出来的数据：见 [NOTICE.md](NOTICE.md)。
 - 字体不在仓库里，都是 SIL Open Font License 1.1 的免费字体，来源见 [docs/FONTS.md](docs/FONTS.md)。
-- 歌曲和歌词不在本仓库里，版权归原作者：原曲 ヤスオP「えれくとりっく・えんじぇぅ」，翻唱 小缘。
+- 歌曲和歌词不在本仓库里，版权归原作者：原曲 ヤスオP「えれくとりっく・えんじぇぅ」；成片使用的是小缘翻唱版（BV1xs41167Ee）的音频。
 
 作者：烧猫定食

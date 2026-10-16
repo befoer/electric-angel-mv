@@ -2,7 +2,7 @@
 // 相机 { x, y, zoom, rot }：x/y 是主平面上的平移（像素），zoom 缩放，rot 旋转（弧度）
 // 图层深度 depth：1 = 主平面；0 = 不随相机动的远景（或屏幕层）；>1 = 近景，比主平面动得多
 import { W, H } from './const.js';
-import { newCanvas } from './env.js';
+import { newCanvas, hiCanvas } from './env.js';
 import { clamp, lerp, smooth, easeIn, easeOut, easeOutBack } from './time.js';
 
 // inout4：四次缓入缓出（animation-principles 的运镜曲线，起步落定柔、中段快）；expo：指数缓出（急起慢停）
@@ -48,9 +48,10 @@ export function camToScreen(cam, depth, x, y) {
 // ---------------------------------------------------------------- 缓冲池（只建一次，不在每帧新建画布）
 
 const POOL = new Map();
-export function pooled(key, w, h) {
+// hi：高清画布（core/env.js hiCanvas；整屏缓冲、要画大的缓存用）
+export function pooled(key, w, h, hi = false) {
   let c = POOL.get(key);
-  if (!c || c.width !== w || c.height !== h) { c = newCanvas(w, h); POOL.set(key, c); }
+  if (!c || c.width !== w || c.height !== h) { c = hi ? hiCanvas(w, h) : newCanvas(w, h); POOL.set(key, c); }
   return c;
 }
 
